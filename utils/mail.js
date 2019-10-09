@@ -14,8 +14,7 @@ export async function sendMail(mailjet, error) {
                     },
                     To: recipients,
                     Subject: `${process.env.ENV_NAME} Database is down!`.trim(),
-                    TextPart: `Querying alerts on the ${process.env.ENV_NAME} Database resulted in the following error:
-                     ${JSON.stringify(error, null, 4)}`,
+                    TextPart: `Querying alerts on the ${process.env.ENV_NAME} Database resulted in the following error: \n ${JSON.stringify(error, null, 4)}`,
                 }
             ]
         })
