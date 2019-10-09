@@ -4,6 +4,8 @@ import mailjet from "node-mailjet";
 
 if (!process.env.RECIPIENTS) {
     throw new Error("Recipients not defined")
+} else if (!process.env.SENDER) {
+    throw new Error("Sender not defined")
 } else if (!process.env.MAIL_JET_API_KEY || !process.env.MAIL_JET_API_SECRET) {
     throw new Error("Mailjet not configured")
 }
