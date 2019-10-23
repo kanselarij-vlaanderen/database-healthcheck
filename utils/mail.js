@@ -1,6 +1,7 @@
 export async function sendMail(mailjet, error) {
     const recipients = process.env.RECIPIENTS.split(",").map(mapMail);
     const sender = mapMail(process.env.SENDER);
+    const envname = process.env.ENV_NAME || '';
     return mailjet
         .post("send", { version: 'v3.1' })
         .request({
@@ -8,8 +9,8 @@ export async function sendMail(mailjet, error) {
                 {
                     From: sender,
                     To: recipients,
-                    Subject: `${process.env.ENV_NAME} Database is down!`.trim(),
-                    TextPart: `Querying alerts on the ${process.env.ENV_NAME} Database resulted in the following error: \n ${JSON.stringify(error, null, 4)}`,
+                    Subject: `${envname} Database is down!`.trim(),
+                    TextPart: `Querying alerts on the ${envname} Database resulted in the following error: \n ${JSON.stringify(error, null, 4)}`,
                 }
             ]
         })
