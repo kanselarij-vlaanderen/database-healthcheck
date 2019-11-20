@@ -16,10 +16,10 @@ setInterval((checkHealth), process.env.INTERVAL || 300000);
 
 async function checkHealth() {
     await checkAlerts()
-        .catch(error => retryRec(3))
+        .catch(error => retry(3))
 }
 
-async function retryRec(times) {
+async function retry(times) {
     console.log(`UNHEALTHY! retrying ${times--} more time(s)`);
     await timeout();
     const res = await checkAlerts()
@@ -29,7 +29,7 @@ async function retryRec(times) {
         if (times <= 0) {
             return sendMail(mailjetConnection, res.err);
         }
-        return retryRec(times);
+        return retry(times);
     }
 }
 
