@@ -9,7 +9,7 @@ export async function sendMail(mailjet, error) {
                 {
                     From: sender,
                     To: recipients,
-                    Subject: `${envname} Database is down!`.trim(),
+                    Subject: `[Automated message] ${envname} Database is down!`.trim(),
                     TextPart: `Querying alerts on the ${envname} Database resulted in the following error: \n ${JSON.stringify(error, null, 4)}`,
                 }
             ]

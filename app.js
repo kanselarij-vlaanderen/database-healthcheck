@@ -19,8 +19,19 @@ function checkHealth() {
     checkAlerts()
         .then(alerts => Array.isArray(alerts)
             ? console.log('HEALTHY!')
-            : throwError(alerts))
+            : retry(3))
         .catch(error => sendMail(mailjetConnection, error))
+}
+
+function retry(times, err) {
+    setTimeout(() =>
+        times >= 0
+            ? checkAlerts()
+                .then(alerts => Array.isArray(alerts)
+                    ? console.log('HEALTHY!')
+                    : retry(--times, alerts))
+            : throwError(err), 3000)
+
 }
 
 function throwError(alerts) {
