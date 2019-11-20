@@ -14,7 +14,10 @@ export async function checkAlerts() {
     }`;
 
     const data = await mu.query(query);
-    return parseSparqlResults(data);
+    const alerts = parseSparqlResults(data);
+    return Array.isArray(alerts)
+        ? console.log('HEALTHY!')
+        : throwError(alerts);
 }
 
 function parseSparqlResults(data) {
@@ -28,4 +31,8 @@ function parseSparqlResults(data) {
         });
         return obj;
     })
+}
+
+function throwError(alerts) {
+    throw new Error(`Alerts query does not return expected result: \n ${JSON.stringify(alerts, null, 4)}`);
 }

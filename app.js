@@ -12,28 +12,27 @@ if (!process.env.RECIPIENTS) {
 
 const mailjetConnection = mailjet.connect(process.env.MAIL_JET_API_KEY, process.env.MAIL_JET_API_SECRET);
 
-checkHealth();
 setInterval((checkHealth), process.env.INTERVAL || 300000);
 
-function checkHealth() {
-    checkAlerts()
-        .then(alerts => Array.isArray(alerts)
-            ? console.log('HEALTHY!')
-            : retry(3))
-        .catch(error => sendMail(mailjetConnection, error))
+async function checkHealth() {
+    await checkAlerts()
+        .catch(error => retryRec(3))
 }
 
-function retry(times, err) {
-    setTimeout(() =>
-        times >= 0
-            ? checkAlerts()
-                .then(alerts => Array.isArray(alerts)
-                    ? console.log('HEALTHY!')
-                    : retry(--times, alerts))
-            : throwError(err), 3000)
-
+async function retryRec(times) {
+    console.log(`UNHEALTHY! retrying ${times--} more time(s)`);
+    await timeout();
+    const res = await checkAlerts()
+        .then(() => ({ ok: true, err: null }))
+        .catch(err => ({ ok: false, err }));
+    if (!res.ok) {
+        if (times <= 0) {
+            return sendMail(mailjetConnection, res.err);
+        }
+        return retryRec(times);
+    }
 }
 
-function throwError(alerts) {
-    throw new Error(`Alerts query does not return expected result: \n ${JSON.stringify(alerts, null, 4)}`);
+function timeout(timeout = 3000) {
+    return new Promise(resolve => setTimeout((resolve), timeout))
 }
