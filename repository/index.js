@@ -1,7 +1,5 @@
 import mu from 'mu';
 
-const targetGraph = "http://mu.semte.ch/graphs/organizations/kanselarij";
-
 export async function checkAlerts() {
     const query = `
     PREFIX ext: <http://mu.semte.ch/vocabularies/ext/>

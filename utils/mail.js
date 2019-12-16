@@ -1,7 +1,7 @@
 export async function sendMail(mailjet, error) {
-    const recipients = process.env.RECIPIENTS.split(",").map(mapMail);
-    const sender = mapMail(process.env.SENDER);
     const envname = process.env.ENV_NAME || '';
+    const recipients = process.env.RECIPIENTS.split(",").map(mapMailAddress);
+    const sender = mapMailAddress(process.env.SENDER, 'Kaleidos System Alerts');
     return mailjet
         .post("send", { version: 'v3.1' })
         .request({
@@ -10,7 +10,7 @@ export async function sendMail(mailjet, error) {
                     From: sender,
                     To: recipients,
                     Subject: `[Automated message] ${envname} Database is down!`.trim(),
-                    TextPart: `Querying alerts on the ${envname} Database resulted in the following error: \n ${JSON.stringify(error, null, 4)}`,
+                    TextPart: `Querying mu-authorisation on the ${envname} environment resulted in the following error: \n ${JSON.stringify(error, null, 4)}`,
                 }
             ]
         })
@@ -22,9 +22,9 @@ export async function sendMail(mailjet, error) {
         });
 }
 
-function mapMail(mail) {
+function mapMailAddress(mail, name) {
     return {
         Email: mail.trim(),
-        Name: mail.split('@')[0].split('.').join(' ')
+        Name: name || mail.split('@')[0].split('.').join(' ')
     };
 }
