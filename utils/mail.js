@@ -16,9 +16,10 @@ export async function sendMail(mailjet, error) {
         })
         .then((result) => {
             console.log(result.body);
+            return result;
         })
         .catch((err) => {
-            console.log("mailjet error: ", response.Response.IncomingMessage.text);
+            console.log("mailjet error: ", err);
         });
 }
 
