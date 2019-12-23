@@ -1,7 +1,10 @@
 export async function sendMail(mailjet, error) {
     const envname = process.env.ENV_NAME || '';
     const recipients = process.env.RECIPIENTS.split(",").map(mapMailAddress);
-    const sender = mapMailAddress(process.env.SENDER, 'Kaleidos System Alerts');
+    const sender = {
+        Email: process.env.SENDER.trim(),
+        Name: 'Kaleidos System Alerts'
+    };
     return mailjet
         .post("send", { version: 'v3.1' })
         .request({
@@ -19,13 +22,13 @@ export async function sendMail(mailjet, error) {
             return result;
         })
         .catch((err) => {
-            console.log("mailjet error: ", err);
+            console.log("mailjet error: ", JSON.stringify(err, null , 4));
         });
 }
 
-function mapMailAddress(mail, name) {
+function mapMailAddress(mail) {
     return {
         Email: mail.trim(),
-        Name: name || mail.split('@')[0].split('.').join(' ')
+        Name: mail.split('@')[0].split('.').join(' ')
     };
 }
